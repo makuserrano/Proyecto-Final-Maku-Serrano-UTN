@@ -23,11 +23,6 @@ public class Tarea {
 
         }
 
-        if (fecha_inicio == null || fecha_vencimiento == null) {
-            throw new IllegalArgumentException("La fechas no pueden ser nulas");
-
-        }
-
         if (fecha_vencimiento.isBefore(fecha_inicio)) {
             throw new IllegalArgumentException("La fecha de vencimiento no puede ser anterior a la fecha de creacion");
         }
@@ -45,5 +40,61 @@ public class Tarea {
     public String toString() {
         return id + ", " + titulo + ", " + descripcion + ", " + estado + ", " + prioridad + ", " + fecha_inicio + ", "
                 + fecha_vencimiento;
+    }
+
+    public Long getId() {
+        return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
+    }
+
+    public String getTitulo() {
+        return titulo;
+    }
+
+    public void setTitulo(String titulo) {
+        this.titulo = titulo;
+    }
+
+    public String getDescripcion() {
+        return descripcion;
+    }
+
+    public void setDescripcion(String descripcion) {
+        this.descripcion = descripcion;
+    }
+
+    public LocalDate getFecha_inicio() {
+        return fecha_inicio;
+    }
+
+    public void setFecha_inicio(LocalDate fecha_inicio) {
+        this.fecha_inicio = fecha_inicio;
+    }
+
+    public LocalDate getFecha_vencimiento() {
+        return fecha_vencimiento;
+    }
+
+    public void setFecha_vencimiento(LocalDate fecha_vencimiento) {
+        this.fecha_vencimiento = fecha_vencimiento;
+    }
+
+    public Estado getEstado() {
+        return estado;
+    }
+
+    public void setEstado(Estado estado) {
+        this.estado = estado;
+    }
+
+    public Prioridad getPrioridad() {
+        return prioridad;
+    }
+
+    public void setPrioridad(Prioridad prioridad) {
+        this.prioridad = prioridad;
     }
 }
