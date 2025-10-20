@@ -41,7 +41,14 @@ public class GestorTarea {
 
     public void listarTareas() {
         for (Tarea t : map.values()) {
-            System.out.println("ID: " + t.getId() + " - " + t.getTitulo());
+            System.out.println(
+                    "ID: " + t.getId() + 
+                    " | Título: " + t.getTitulo() +
+                    " | Descripción: " + t.getDescripcion() +
+                    " | Estado: " + t.getEstado() +
+                    " | Prioridad: " + t.getPrioridad() +
+                    " | Inicio: " + t.getFecha_inicio() +
+                    " | Vencimiento: " + t.getFecha_vencimiento());
         }
     }
 
@@ -105,11 +112,10 @@ public class GestorTarea {
         System.out.println("Tarea eliminada, ID: " + id);
     }
 
+    // editar tarea
 
-    //editar tarea
-
-
-    public void editarTarea(long id, String newTitulo, String newDescripcion, String newFecha_inicio_str, String newFecha_vencida_str, Estado newEstado, Prioridad newPrioridad){
+    public void editarTarea(long id, String newTitulo, String newDescripcion, String newFecha_inicio_str,
+            String newFecha_vencimiento_str, Estado newEstado, Prioridad newPrioridad) {
 
         Tarea tarea = map.get(id);
         if (tarea == null) {
@@ -124,56 +130,55 @@ public class GestorTarea {
         Estado estActual = tarea.getEstado();
         Prioridad prioActual = tarea.getPrioridad();
 
-        //aplicar cambios en cada uno
+        // aplicar cambios en cada uno
 
-
-        //TITULO
+        // TITULO
 
         if (newTitulo != null) {
             String titulo = newTitulo.trim();
-            if (newTitulo.isEmpty()) {
+            if (titulo.isEmpty()) {
                 System.out.println("El titulo no puede quedar vacio.");
                 return;
             }
-            tituloActual = newTitulo;
+            tituloActual = titulo;
         }
 
-        //DESCRIPCION
+        // DESCRIPCION
 
         if (newDescripcion != null) {
             descActual = newDescripcion.trim();
         }
 
-
-        //fechas
-        try{
+        // fechas
+        try {
             if (newFecha_inicio_str != null && !newFecha_inicio_str.trim().isEmpty()) {
-                
-               fecha_inicio_act =  LocalDate.parse(newFecha_inicio_str.trim());           
+
+                fecha_inicio_act = LocalDate.parse(newFecha_inicio_str.trim());
             }
-            if (newFecha_vencida_str != null && !newFecha_vencida_str.trim().isEmpty()) {
-                
-               fecha_vencimiento_act =  LocalDate.parse(newFecha_vencida_str.trim());           
+            if (newFecha_vencimiento_str != null && !newFecha_vencimiento_str.trim().isEmpty()) {
+
+                fecha_vencimiento_act = LocalDate.parse(newFecha_vencimiento_str.trim());
             }
 
-        }   catch(Exception e){
+        } catch (Exception e) {
             System.out.println("El formato de la fecha debe ser YYYY-MM-DD");
             return;
         }
         // fecha inicio y vencimiento.
 
-        if (fecha_inicio_act != null && fecha_vencimiento_act.isBefore(fecha_inicio_act)) {
-            System.out.println("La fecha de venicimiento no puede ser anterior a la fecha de inicio");
+        if (fecha_inicio_act != null && fecha_vencimiento_act != null
+                && fecha_vencimiento_act.isBefore(fecha_inicio_act)) {
+            System.out.println("La fecha de vencimiento no puede ser anterior a la fecha de inicio");
             return;
         }
 
-        //enums
-        if(newEstado != null) estActual = newEstado;
-        if(newPrioridad != null) prioActual = newPrioridad;
+        // enums
+        if (newEstado != null)
+            estActual = newEstado;
+        if (newPrioridad != null)
+            prioActual = newPrioridad;
 
-
-
-        //Seteamos las actualizaciones.
+        // Seteamos las actualizaciones.
 
         tarea.setTitulo(tituloActual);
         tarea.setDescripcion(descActual);
@@ -182,10 +187,53 @@ public class GestorTarea {
         tarea.setEstado(estActual);
         tarea.setPrioridad(prioActual);
 
-        //csv
+        // csv
         List<Tarea> lista = new ArrayList<>(map.values());
         csvManager.guardarTareas(lista);
         System.out.println("Tarea modificada con exito ✅. ID: " + id);
     }
 
+    public void listarEstado() {
+        System.out.println("Pedientes");
+        for (Tarea t : map.values()) {
+            if (t.getEstado() == Estado.PENDIENTE) {
+                System.out.println("ID: " + t.getId() + " - " + t.getTitulo());
+            }
+        }
+
+        System.out.println("En progreso: ");
+        for (Tarea t : map.values()) {
+            if (t.getEstado() == Estado.EN_PROGRESO) {
+                System.out.println("ID: " + t.getId() + " - " + t.getTitulo());
+            }
+        }
+
+        System.out.println("Completada: ");
+        for (Tarea t : map.values()) {
+            if (t.getEstado() == Estado.COMPLETADA) {
+                System.out.println("ID: " + t.getId() + " - " + t.getTitulo());
+            }
+        }
+    }
+
+    public void listarVencenSemanaActual() {
+
+        LocalDate hoy = LocalDate.now();
+        LocalDate lunes = hoy.minusDays(hoy.getDayOfWeek().getValue() - 1); // resto el valor del dia -1 y eso me da los
+                                                                            // dias que faltan para el lunes.
+        LocalDate domingo = lunes.plusDays(6);
+
+        System.out.println("Las tareas que vencen esta semana de " + lunes + " a " + domingo);
+
+        for (Tarea t : map.values()) {
+            LocalDate fecha_vencimiento_act = t.getFecha_vencimiento();
+            if (fecha_vencimiento_act != null && !fecha_vencimiento_act.isBefore(lunes)
+                    && !fecha_vencimiento_act.isAfter(domingo)) {
+                System.out.println("ID: " + t.getId() + " - " + t.getTitulo() + "Vence: " + fecha_vencimiento_act);
+            }
+        }
+        // Si la fecha actual es distinta de nulo y si la fecha actual no es antes del
+        // lunes y despues del domingo imprime le fecha.
+
+    }
 }
