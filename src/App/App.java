@@ -10,7 +10,7 @@ import Service.GestorTarea;
 public class App {
     public static void main(String[] args) throws Exception {
         Scanner sc = new Scanner(System.in);
-        CSVManager csv = new CSVManager("data\tareas.csv");
+        CSVManager csv = new CSVManager("src/data/tareas.csv");
         GestorTarea gestor = new GestorTarea(csv);
         gestor.cargarTareas();
         int opt = 0;
@@ -51,7 +51,7 @@ public class App {
 
                 case 2:
                     gestor.listarTareas();
-                    ;
+                    break;
 
                 case 3:
                     System.out.print("ID de la tarea a editar: ");
